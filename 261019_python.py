@@ -1,0 +1,1 @@
+print("첫 VSCode 파이썬!")
