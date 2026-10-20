@@ -110,4 +110,5 @@ print(device_temp)
 print("실습12")
 x,y,z = 1,2,3
 width,height = 4,3
-print(width), print(height)
+print(width)
+print(height)
