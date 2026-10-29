@@ -16,6 +16,42 @@ greet()
 print("실습 1")
 
 def greet():
-    print("점검을 시작합닌다")
+    print("점검을 시작합니다")
 greet()
 greet()
+
+print("===========================")
+# 실습 2
+print("실습 2")
+
+def start_check():
+    print("점검을 시작합니다")
+    print("펌프 온도를 확인합니다")
+    print("결과를 기록합니다")
+start_check()
+start_check()
+
+
+# 실습 3
+print("실습 3")
+# hello()               # NameError (정의 전 호출 시)
+def hello():
+    print("안녕하세요")
+
+hello()
+hello()
+
+# 실습 4
+print("실습 4")
+def line():
+    print("=" * 10)
+
+def check():
+    print("점검을 시작합니다")
+    print("기록을 준비하세요")
+
+line()
+check()
+
+line()
+check()
