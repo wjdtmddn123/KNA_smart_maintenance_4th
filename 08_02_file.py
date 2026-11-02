@@ -17,7 +17,7 @@ FILE = "data/08_press.csv"
 # f.close()           # 파일을 열고 난 후 닫기까지
 
 
-# # with open - 불록이 끝나면 자동 닫힘
+# with open - 불록이 끝나면 자동 닫힘
 # with open(FILE, "r", encoding="utf-8")as f:
 #     for line in f:
 #         print(line)
