@@ -85,6 +85,12 @@ print(df.iloc[0:5, [2, 6]].shape)
 print("실습 4")
 ds = pd.read_csv(F_SHOT)
 print(ds.shape)
-print(list(ds.columns))
-print(ds.loc[0:9, ['설비ID', '비스킷두께', '품질등급']])
-print(ds.iloc[-5:])
+print(ds.columns.tolist())
+
+
+a = ds.loc[0:9, ['설비ID', '비스킷두께', '품질등급']]
+print(a.shape)
+
+b = ds.iloc[-5:]
+print(b.shape)
+print(b['샷'].tolist())
