@@ -128,15 +128,15 @@ print("차이:", mean_t.max() - mean_t.min())
 # print("평균차이:", round(means.max()-means.min(), 2))
 
 
-# # 여러 키 그룹 코드
-# keys = ["냉각기상태", "운전부하"]
-# print(df.groupby(keys)["온도"].mean().round(2))
-# # 냉각기상태  운전부하
-# # 고장     고부하     55.51
-# #        저부하     54.05
-# # 저하     고부하     44.07
-# #        저부하     45.58
-# # 정상     고부하     35.89
+# 여러 키 그룹 코드
+keys = ["냉각기상태", "운전부하"]
+print(df.groupby(keys)["온도"].mean().round(2))
+# 냉각기상태  운전부하
+# 고장     고부하     55.51
+#        저부하     54.05
+# 저하     고부하     44.07
+#        저부하     45.58
+# 정상     고부하     35.89
 
 # crosstab
 print(pd.crosstab(df["냉각기상태"], df["운전부하"]))
