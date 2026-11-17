@@ -54,3 +54,85 @@ drop_cols = feature_rate[feature_rate >= 0.4].index.tolist()
 print(drop_cols)    # ['최대사출속도', '감압시간']
 base = df.drop(columns=drop_cols).copy()
 print(base.shape)
+
+# 실습 4
+print("실습 4")
+versions = {'원본': df, '행제거': df.dropna(), 'thresh20': df.dropna(thresh=20)}
+compariosn_rows = []
+
+for name, frame in versions.items():
+    compariosn_rows.append({
+        '방식': name, '행수': len(frame),
+        '손실률_%': (1 - len(frame) / len(df)) * 100,
+        '불량수': int(frame['불량여부'].sum()),
+        '불량비율_%': frame['불량여부'].mean() * 100 
+    })
+
+comparison = pd.DataFrame(compariosn_rows)
+print(comparison.round(1).to_string(index=False))
+
+# 실습 5
+print("실습 5")
+mask = df["최대사출압"].isna()
+print(int(mask.sum()))
+
+mean_value = df["최대사출압"].mean()
+median_value = df["최대사출압"].median()
+print(round(mean_value, 2), round(median_value, 2))
+
+# 실습 5 정답
+s = df['최대사출압']
+mask = s.isna()
+mean_filled = s.fillna(s.mean())
+median_filled = s.fillna(s.median())
+
+print(round(s.mean(), 2), round(s.median(), 2))     # 1241.67 1238.4
+print(int(mask.sum()))      # 60
+
+fill_compare = pd.DataFrame({'평균대체': mean_filled, '중앙값대체': median_filled})
+print(fill_compare.loc[mask].head(3).round(2))
+
+# ffill, bfill
+
+series_demo = pd.Series([None, 73.0, None, None, 75.0])
+
+# ffill - 앞에서 마지막으로 확인한 값으로 채움
+print(series_demo.ffill().tolist())     # [nan, 73.0, 73.0, 73.0, 75.0]
+# - limit: 연속 결측 구간에서 최대 몇칸을 채울지
+# bfill - 뒤에서 처음 확인되는 값으로 채움
+print(series_demo.bfill().tolist())     # [73.0, 73.0, 75.0, 75.0, 75.0]
+
+# 실습 6
+print("실습 6")
+NA_RULES = {'배럴온도': [999], '사출압력': [0], '스크루속도': [-999]}
+log = pd.read_csv(F_LOG, na_values=NA_RULES, parse_dates=['측정시각'])      # 측정시각을 날짜,시간으로 읽도록 지정
+log['측정시각'] = pd.to_datetime(log['측정시각'], errors='raise')   # 날짜, 시간 변환 명시적 확인 (에러 처리)
+unknown = log.loc[log['사출기'].isna()].copy()
+known = log.loc[log['사출기'].notna()].copy()
+
+known = known.sort_values(['사출기', '측정시각'])
+print(len(known), len(unknown))     # 15 1
+print(int(log.isna().sum().sum()))  
+
+# 앞의 값
+candidate = (known.groupby("사출기")["배럴온도"].ffill(limit=1))
+
+# 온도가 실제로 있었던 시각만 표시
+observed_at = known['측정시각'].where(known['배럴온도'].notna())
+# print(observed_at)
+# 마지막으로 온도가 있었던 시각
+last_time = observed_at.groupby(known['사출기']).ffill()
+# 현재 기록의 시각 - 마지막으로 온도를 실제 측정한 시각
+gap = known['측정시각'] - last_time
+print(known['측정시각'], last_time)
+
+can_fill = (known['배럴온도'].isna() & candidate.notna()
+            & gap.le(pd.Timedelta('2min')))
+
+# gap.le(pd.Timedelta('2min'))
+# - .le : 이하인지 비교
+# - pd.Timedelta('2min') : 2분
+
+# 허용 위치에 온도 넣기
+known.loc[can_fill, "배럴온도"] = candidate.loc[can_fill]
+print(int(can_fill.sum()))          # 3
